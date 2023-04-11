@@ -17,6 +17,23 @@ function addTodo {
   echo "${date}, ${todo}" >> todos.csv
 }
 
-addTodo
+function main() {
+  case $1 in
+    
+    add)
+      addTodo
+      ;;
+    
+    help)
+      printf "\n*** HELP ***\n"
+      printf "Available commands:\nadd\nhelp\n"
+      ;;
 
+    *)
+      printf "usage: ./todo.sh [add | help]\n"
+      ;;
+  esac
+}
+
+main $1
 
