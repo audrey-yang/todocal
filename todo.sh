@@ -18,27 +18,37 @@ function addTodo {
 }
 
 function showTodos {
-  printf "\n*** My TODOs ***\n"
-  cat todos.csv
+  read -p "What day would you like to view? (mm/dd/yy) " -r day
+  count=0
+  grep -E "${day}" todos.csv | while read -r line; do
+    printf '[%d] %s\n' "$count" "$line"
+    (( count++ ))
+  done
 }
 
 function main() {
-  read -p "What would you like to do? " -r opt
-  case $opt in
-    add)
-      addTodo
-      ;; 
-   show)
-      showTodos
-      ;;
-   help)
-      printf "\n*** HELP ***\n"
-      printf "Available commands:\nadd\nhelp\n"
-      ;;
-    *)
-      printf "usage: ./todo.sh [add | help]\n"
-      ;;
-  esac
+  printf "What would you like to do? " 
+  read opt
+  while [ ! -z "$opt" ]; do
+    case $opt in
+      add)
+        addTodo
+        ;; 
+     show)
+        showTodos
+        ;;
+     help)
+        printf "\n*** HELP ***\n"
+        printf "Available commands:\nadd\nhelp\n"
+        ;;
+      *)
+        printf "usage: ./todo.sh [add | help]\n"
+        ;;
+    esac
+    read -p "What would you like to do? " -r opt
+  done
+  printf "Bye!\n"
+  exit 0
 }
 
 main 
