@@ -23,7 +23,8 @@ function showTodos {
 }
 
 function main() {
-  case $1 in 
+  read -p "What would you like to do? " -r opt
+  case $opt in
     add)
       addTodo
       ;; 
@@ -40,5 +41,4 @@ function main() {
   esac
 }
 
-main $1
-
+main 
