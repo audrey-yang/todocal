@@ -27,7 +27,8 @@ function showTodos {
 }
 
 function main() {
-  printf "What would you like to do? " 
+  printf 'Welcome! Today is %(%m/%d/%y)T.\n' -1
+  printf "Enter a command: " 
   read opt
   while [ ! -z "$opt" ]; do
     case $opt in
