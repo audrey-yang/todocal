@@ -13,8 +13,8 @@ function addTodo {
   printf "\n*** Add TODO ***\n"
   read -p "Enter task: " -r todo
   read -p "Enter date for task (mm/dd/yy): " -r date  
-  echo "${date}, ${todo}"
   echo "${date}, ${todo}" >> todos.csv
+  printf "Thanks, added your task!\n"
 }
 
 function showTodos {
@@ -40,13 +40,17 @@ function main() {
         ;;
      help)
         printf "\n*** HELP ***\n"
-        printf "Available commands:\nadd\nhelp\n"
+        printf "Available commands:\nadd\nshow\nhelp\nexit\n"
         ;;
+     exit)
+        break
+	;;
       *)
-        printf "usage: ./todo.sh [add | help]\n"
+        printf "usage: ./todo.sh [add | show | help | exit]\n"
         ;;
     esac
-    read -p "What would you like to do? " -r opt
+    echo
+    read -p "Enter a command: " -r opt
   done
   printf "Bye!\n"
   exit 0
