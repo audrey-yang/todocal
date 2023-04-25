@@ -24,7 +24,7 @@ function showAppt {
   count=0
   grep -E "${day}" appts.csv | while read -r line; do
     printf '[%d] ' "$count"
-    echo $line | sed -r 's/^(.*),(.*),(.*),(.*)$/\3-\4: \2/'
+    echo $line | sed -r 's/^(.*), (.*), (.*), (.*)$/\3-\4: \2/'
     (( count++ ))
   done
 }
@@ -61,28 +61,39 @@ function editAppt {
 }
 
 function main() {
-  case $1 in 
-    add)
-      addAppt
-      ;; 
-    show)
-      showAppt
-      ;;
-    today)
-      showApptsToday
-      ;;
-    edit)
-      editAppt
-      ;;
-    help)
-      printf "\n*** HELP ***\n"
-      printf "Available commands:\nadd\nhelp\n"
-      ;;
-    *)
-      printf "usage: ./todo.sh [add | help]\n"
-      ;;
-  esac
+  printf 'Welcome! Today is %(%m/%d/%y)T.\n' -1
+  printf "Enter a command: " 
+  read opt
+  while [ ! -z "$opt" ]; do
+    case $opt in
+      add)
+        addAppt
+        ;; 
+      show)
+        showAppt
+        ;;
+	  today)
+      	showApptsToday
+    	;;
+      edit)
+        editAppt
+        ;;
+      help)
+        printf "\n*** HELP ***\n"
+        printf "Available commands:\nadd\nshow\nhelp\nexit\n"
+        ;;
+      exit)
+        break
+	      ;;
+      *)
+        printf "usage: ./appt.sh [add | show | help | exit]\n"
+        ;;
+    esac
+    echo
+    read -p "Enter a command: " -r opt
+  done
+  printf "Bye!\n"
   exit 0
 }
 
-main $1
+main 
