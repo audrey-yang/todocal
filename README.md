@@ -7,21 +7,21 @@ By [@homjason](https://github.com/homjason) and [@audrey-yang](https://github.co
 
 ### Commands
 
-- `./todocal.sh` + 
+- `./todocal.sh`
   - `todo`
     - `add`
     - `show`
     - `edit`
     - `delete`
     - No arguments: interactive mode 
-  - 'cal'
+  - `cal`
     - `add`
     - `show`
     - `today` (shows today's appointments)
     - `edit`
     - `delete`
     - No arguments: interactive mode 
-  - 'help'
+  - `help`
 
 ### How to make show TODOs/appointments on shell boot
 
