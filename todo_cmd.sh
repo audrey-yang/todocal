@@ -7,30 +7,18 @@
 ####################################
 
 # assuming we have a "database" called todos.csv
-# formatted (date, todo)
+# formatted (todo)
 
 function addTodo {
   printf "\n*** Add TODO ***\n"
   read -p "Enter task: " -r todo
-  read -p "Enter date for task (mm/dd/yy): " -r date  
-  echo "${date}, ${todo}" >> todos.csv
+  echo "${todo}" >> todos.csv
   printf "Thanks, added your task!\n"
 }
 
 function showTodos {
-  read -p "What day would you like to view? (mm/dd/yy) " -r day
   count=0
-  grep -E "${day}" todos.csv | while read -r line; do
-    printf '[%d] %s\n' "$count" "$line"
-    (( count++ ))
-  done
-}
-
-function showTodosToday {
-  printf "Today's todos: \n"
-  today=$(date +'%m/%d/%y')
-  count=0
-  grep -E "${today}" ~/todocal/todos.csv | while read -r line; do
+  while read -r line < todos.csv; do
     printf '[%d] %s\n' "$count" "$line"
     (( count++ ))
   done
@@ -43,10 +31,7 @@ function main() {
       ;; 
    show)
       showTodos
-      ;;
-   today)
-      showTodosToday
-      ;;      
+      ;;  
    help)
       printf "\n*** HELP ***\n"
       printf "Available commands:\nadd\nhelp\n"
