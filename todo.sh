@@ -7,23 +7,37 @@
 ####################################
 
 # assuming we have a "database" called todos.csv
-# formatted (date, todo)
+# formatted (todo)
 
 function addTodo {
   printf "\n*** Add TODO ***\n"
   read -p "Enter task: " -r todo
-  read -p "Enter date for task (mm/dd/yy): " -r date  
-  echo "${date}, ${todo}" >> todos.csv
+  # read -p "Enter date for task (mm/dd/yy): " -r date  
+  echo "${todo}" >> todos.csv
   printf "Thanks, added your task!\n"
 }
 
 function showTodos {
-  read -p "What day would you like to view? (mm/dd/yy) " -r day
   count=0
-  grep -E "${day}" todos.csv | while read -r line; do
+  cat todos.csv | while read -r line; do
     printf '[%d] %s\n' "$count" "$line"
     (( count++ ))
   done
+}
+
+function editTodos {
+  read -p "Which TODO would you like to edit? Please enter the number of the TODO: " -r todoNum
+  count=0
+  todos=$(cat todos.csv)
+  read -r line < todos.csv
+  while [ $count -le $((todoNum)) ]; do
+    if [ $count -eq $((todoNum)) ]; then
+      read -p "What would you like to replace this TODO with? " -r newTodo
+      sed -ri "s/$line/$newTodo/" todos.csv
+      printf "TODO updated!\n"
+    fi
+    (( count++ ))
+  done 
 }
 
 function main() {
@@ -38,13 +52,17 @@ function main() {
      show)
         showTodos
         ;;
+     edit)
+        showTodos
+        editTodos
+        ;;
      help)
         printf "\n*** HELP ***\n"
         printf "Available commands:\nadd\nshow\nhelp\nexit\n"
         ;;
      exit)
         break
-	;;
+	      ;;
       *)
         printf "usage: ./todo.sh [add | show | help | exit]\n"
         ;;
