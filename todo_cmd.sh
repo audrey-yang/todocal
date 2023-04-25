@@ -7,33 +7,59 @@
 ####################################
 
 # assuming we have a "database" called todos.csv
-# formatted (date, todo)
+# formatted (todo)
 
 function addTodo {
   printf "\n*** Add TODO ***\n"
   read -p "Enter task: " -r todo
-  read -p "Enter date for task (mm/dd/yy): " -r date  
-  echo "${date}, ${todo}" >> todos.csv
+  echo "${todo}" >> todos.csv
   printf "Thanks, added your task!\n"
 }
 
 function showTodos {
-  read -p "What day would you like to view? (mm/dd/yy) " -r day
+  printf "\n*** My TODOs ***\n"
   count=0
-  grep -E "${day}" todos.csv | while read -r line; do
+  cat todos.csv | while read -r line; do
     printf '[%d] %s\n' "$count" "$line"
     (( count++ ))
   done
 }
 
-function showTodosToday {
-  printf "Today's todos: \n"
-  today=$(date +'%m/%d/%y')
+function editTodos {
+  printf "\n*** Edit TODOs ***\n"
+  read -p "Which TODO would you like to edit? Please enter the number: " -r todoNum
   count=0
-  grep -E "${today}" ~/todocal/todos.csv | while read -r line; do
-    printf '[%d] %s\n' "$count" "$line"
+  while read -r line; do
+    if [ $count -eq $((todoNum)) ]; then
+      break
+    fi
     (( count++ ))
-  done
+  done < <(cat todos.csv) 
+  if [ $count -eq $((todoNum)) ]; then
+      read -p "What would you like to replace this TODO with? " -r newTodo
+      sed -ri "s/$line/$newTodo/" todos.csv
+      printf "TODO updated!\n"
+  else
+    printf "TODO does not exist\n"
+  fi
+}
+
+function deleteTodos {
+  printf "\n*** Delete TODOs ***\n"
+  read -p "Which TODO would you like to delete? Please enter the number: " -r todoNum
+  count=0
+  while read -r line; do
+    if [ $count -eq $((todoNum)) ]; then
+      break
+    fi
+    (( count++ ))
+  done < <(cat todos.csv) 
+  if [ $count -eq $((todoNum)) ]; then
+      sed -ri "/$line/d" todos.csv
+      printf "TODO deleted!\n"
+  else
+    printf "TODO does not exist\n"
+  fi
 }
 
 function main() {
@@ -41,18 +67,23 @@ function main() {
     add)
       addTodo
       ;; 
-   show)
+    show)
       showTodos
+      ;;  
+    edit)
+      showTodos
+      editTodos
       ;;
-   today)
-      showTodosToday
-      ;;      
-   help)
+    delete)
+      showTodos
+      deleteTodos
+      ;;
+    help)
       printf "\n*** HELP ***\n"
-      printf "Available commands:\nadd\nhelp\n"
+      printf "Available commands:\nadd\nshow\nedit\ndelete\nhelp\n"
       ;;
     *)
-      printf "usage: ./todo.sh [add | help]\n"
+      printf "usage: ./todo.sh [add | show | edit | delete | help]\n"
       ;;
   esac
 }
