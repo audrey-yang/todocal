@@ -61,7 +61,8 @@ function deleteTodos {
 }
 
 function main() {
-  printf 'Welcome! Today is %(%m/%d/%y)T.\n' -1
+  printf 'Welcome! Today is %(%m/%d/%y)T. What would you like to do?\n' -1
+  printf "\tadd\n\tshow\n\tedit\n\tdelete\n\thelp\n\texit\n"
   printf "Enter a command: " 
   read opt
   while [ ! -z "$opt" ]; do
@@ -82,13 +83,13 @@ function main() {
         ;;
      help)
         printf "\n*** HELP ***\n"
-        printf "Available commands:\nadd\nshow\nhelp\nexit\n"
+        printf "Available commands:\nadd\nshow\nedit\ndelete\nhelp\nexit\n"
         ;;
      exit)
         break
 	      ;;
       *)
-        printf "usage: ./todo.sh [add | show | help | exit]\n"
+        printf "usage: ./todo.sh [add | show | edit | delete | help | exit]\n"
         ;;
     esac
     echo
