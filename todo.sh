@@ -28,16 +28,36 @@ function showTodos {
 function editTodos {
   read -p "Which TODO would you like to edit? Please enter the number of the TODO: " -r todoNum
   count=0
-  todos=$(cat todos.csv)
-  read -r line < todos.csv
-  while [ $count -le $((todoNum)) ]; do
+  while read -r line; do
     if [ $count -eq $((todoNum)) ]; then
+      break
+    fi
+    (( count++ ))
+  done < <(cat todos.csv) 
+  if [ $count -eq $((todoNum)) ]; then
       read -p "What would you like to replace this TODO with? " -r newTodo
       sed -ri "s/$line/$newTodo/" todos.csv
       printf "TODO updated!\n"
+  else
+    printf "TODO does not exist\n"
+  fi
+}
+
+function deleteTodos {
+  read -p "Which TODO would you like to delete? Please enter the number of the TODO: " -r todoNum
+  count=0
+  while read -r line; do
+    if [ $count -eq $((todoNum)) ]; then
+      break
     fi
     (( count++ ))
-  done 
+  done < <(cat todos.csv) 
+  if [ $count -eq $((todoNum)) ]; then
+      sed -ri "/$line/d" todos.csv
+      printf "TODO deleted!\n"
+  else
+    printf "TODO does not exist\n"
+  fi
 }
 
 function main() {
@@ -55,6 +75,10 @@ function main() {
      edit)
         showTodos
         editTodos
+        ;;
+     delete)
+        showTodos
+        deleteTodos
         ;;
      help)
         printf "\n*** HELP ***\n"
