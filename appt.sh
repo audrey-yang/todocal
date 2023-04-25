@@ -24,7 +24,7 @@ function showAppt {
   count=0
   grep -E "${day}" appts.csv | while read -r line; do
     printf '[%d] ' "$count"
-    echo $line | sed -r 's/^(.*), (.*), (.*), (.*)$/\3-\4: \2/'
+    echo $line | sed -r 's/^(.*),(.*),(.*),(.*)$/\3-\4: \2/'
     (( count++ ))
   done
 }
@@ -41,9 +41,14 @@ function showApptsToday {
 }
 
 function editAppt {
+  printf "*** Your appointments ***\n"
+  cat appts.csv | while read -r line; do
+    printf '[%d] ' "$count"
+    echo $line | sed -r 's/^(.*),(.*),(.*),(.*)$/\3-\4: \2/'
+    (( count++ ))
+  done
   read -p "Which appointment would you like to edit? Please enter the number: " -r num
   count=0
-  numLines=$(wc -l < appts.csv)
   while read -r line; do
     if [ $count -ge $((num)) ]; then
       break
@@ -57,11 +62,37 @@ function editAppt {
       endTime="$(cut -d ',' -f 4 <<<$line)"
       sed -ri "s~$line~$date,$newAppt,$startTime,$endTime~" appts.csv
       printf "Appointment updated!\n"
+  else
+    printf "Error: appointment does not exist\n"
+  fi
+}
+
+function deleteAppt {
+  printf "*** Your appointments ***\n"
+  cat appts.csv | while read -r line; do
+    printf '[%d] ' "$count"
+    echo $line | sed -r 's/^(.*),(.*),(.*),(.*)$/\3-\4: \2/'
+    (( count++ ))
+  done
+  read -p "Which appointment would you like to delete? Please enter the number: " -r apptNum
+  count=0
+  while read -r line; do
+    if [ $count -eq $((apptNum)) ]; then
+      break
+    fi
+    (( count++ ))
+  done < <(cat appts.csv) 
+  if [ $count -eq $((apptNum)) ]; then
+      sed -ri "\~$line~d" appts.csv
+      printf "Appointment deleted!\n"
+  else
+    printf "Error: appointment does not exist\n"
   fi
 }
 
 function main() {
   printf 'Welcome! Today is %(%m/%d/%y)T.\n' -1
+  printf "\tadd\n\tshow\n\tedit\n\tdelete\n\thelp\n\texit\n"
   printf "Enter a command: " 
   read opt
   while [ ! -z "$opt" ]; do
@@ -72,12 +103,15 @@ function main() {
       show)
         showAppt
         ;;
-	  today)
-      	showApptsToday
-    	;;
       edit)
         editAppt
         ;;
+      delete)
+        deleteAppt
+        ;;
+	    today)
+      	showApptsToday
+    	  ;;
       help)
         printf "\n*** HELP ***\n"
         printf "Available commands:\nadd\nshow\nhelp\nexit\n"
@@ -86,7 +120,7 @@ function main() {
         break
 	      ;;
       *)
-        printf "usage: ./appt.sh [add | show | help | exit]\n"
+        printf "usage: ./appt.sh [add | show | edit | delete | help | exit]\n"
         ;;
     esac
     echo

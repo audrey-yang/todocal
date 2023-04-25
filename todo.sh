@@ -12,7 +12,6 @@
 function addTodo {
   printf "\n*** Add TODO ***\n"
   read -p "Enter task: " -r todo
-  # read -p "Enter date for task (mm/dd/yy): " -r date  
   echo "${todo}" >> todos.csv
   printf "Thanks, added your task!\n"
 }
@@ -26,7 +25,7 @@ function showTodos {
 }
 
 function editTodos {
-  read -p "Which TODO would you like to edit? Please enter the number of the TODO: " -r todoNum
+  read -p "Which TODO would you like to edit? Please enter the number: " -r todoNum
   count=0
   while read -r line; do
     if [ $count -eq $((todoNum)) ]; then
@@ -44,7 +43,7 @@ function editTodos {
 }
 
 function deleteTodos {
-  read -p "Which TODO would you like to delete? Please enter the number of the TODO: " -r todoNum
+  read -p "Which TODO would you like to delete? Please enter the number: " -r todoNum
   count=0
   while read -r line; do
     if [ $count -eq $((todoNum)) ]; then

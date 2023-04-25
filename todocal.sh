@@ -7,54 +7,63 @@
 ####################################
 
 function main() {
-  printf 'Welcome! Today is %(%m/%d/%y)T.\n' -1
-  case $1 in 
-    add)
-      addTodo
-      ;; 
-   show)
-      showTodos
-      ;;
-   today)
-      showTodosToday
-      ;;      
-   help)
-      printf "\n*** HELP ***\n"
-      printf "Available commands:\nadd\nhelp\n"
-      ;;
-    *)
-	  if [ ! -z "$opt" ]; then
-	  	
-	  fi
-      printf "usage: ./todo.sh [add | help]\n"
-      ;;
-  esac
-  printf "Enter a command: " 
-  read opt
-  while [ ! -z "$opt" ]; do
-    case $opt in
-      todo-add)
-        todo_cmd add
-        ;; 
-     todo-show)
-        todo_cmd show
-        ;;
-     help)
-        printf "\n*** HELP ***\n"
-        printf "Available commands:\nadd\nshow\nhelp\nexit\n"
-        ;;
-     exit)
-        break
-	;;
+   case $1 in 
+      todo)
+         case $2 in
+            add)
+               ./todo_cmd.sh add
+               ;; 
+            show)
+               ./todo_cmd.sh show
+               ;;
+            edit)
+               ./todo_cmd.sh edit
+               ;;
+            delete)
+               ./todo_cmd.sh delete
+               ;;
+            "")
+               ./todo.sh
+               ;;
+            *)
+               printf "Error: unrecognized :("
+               ;;
+         esac
+         ;;
+      cal)
+         case $2 in
+            add)
+               ./appt_cmd.sh add
+               ;; 
+            show)
+               ./appt_cmd.sh show
+               ;;
+            today)
+               ./appt_cmd.sh today
+               ;;
+            edit)
+               ./appt_cmd.sh edit
+               ;;
+            delete)
+               ./appt_cmd.sh delete
+               ;;
+            "")
+               ./appt.sh
+               ;;
+            *)
+               printf "Error: unrecognized :("
+               ;; 
+         esac
+         ;;
+      help)
+         printf "\n*** HELP ***\n"
+         printf "Available commands:\n[todo|cal] [add|show|edit|delete]\n"
+         ;;
       *)
-        printf "usage: ./todo.sh [add | show | help | exit]\n"
-        ;;
-    esac
-    echo
-    read -p "Enter a command: " -r opt
-  done
-  printf "Bye!\n"
-  exit 0
+         printf "Usage:\n./todocal.sh [todo|cal] [add|show|edit|delete]\n"
+         ;;
+   esac
+   exit 0
 }
 
-main 
+main $1 $2

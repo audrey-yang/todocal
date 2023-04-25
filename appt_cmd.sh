@@ -41,9 +41,14 @@ function showApptsToday {
 }
 
 function editAppt {
+  printf "*** Your appointments ***\n"
+  cat appts.csv | while read -r line; do
+    printf '[%d] ' "$count"
+    echo $line | sed -r 's/^(.*),(.*),(.*),(.*)$/\3-\4: \2/'
+    (( count++ ))
+  done
   read -p "Which appointment would you like to edit? Please enter the number: " -r num
   count=0
-  numLines=$(wc -l < appts.csv)
   while read -r line; do
     if [ $count -ge $((num)) ]; then
       break
@@ -57,30 +62,61 @@ function editAppt {
       endTime="$(cut -d ',' -f 4 <<<$line)"
       sed -ri "s~$line~$date,$newAppt,$startTime,$endTime~" appts.csv
       printf "Appointment updated!\n"
+  else
+    printf "Error: appointment does not exist\n"
+  fi
+}
+
+function deleteAppt {
+  printf "*** Your appointments ***\n"
+  cat appts.csv | while read -r line; do
+    printf '[%d] ' "$count"
+    echo $line | sed -r 's/^(.*),(.*),(.*),(.*)$/\3-\4: \2/'
+    (( count++ ))
+  done
+  read -p "Which appointment would you like to delete? Please enter the number: " -r apptNum
+  count=0
+  while read -r line; do
+    if [ $count -eq $((apptNum)) ]; then
+      break
+    fi
+    (( count++ ))
+  done < <(cat appts.csv) 
+  if [ $count -eq $((apptNum)) ]; then
+      sed -ri "\~$line~d" appts.csv
+      printf "Appointment deleted!\n"
+  else
+    printf "Error: appointment does not exist\n"
   fi
 }
 
 function main() {
   case $1 in 
     add)
-      addAppt
-      ;; 
-    show)
-      showAppt
-      ;;
-    today)
-      showApptsToday
-      ;;
-    edit)
-      editAppt
-      ;;
-    help)
-      printf "\n*** HELP ***\n"
-      printf "Available commands:\nadd\nhelp\n"
-      ;;
-    *)
-      printf "usage: ./todo.sh [add | help]\n"
-      ;;
+        addAppt
+        ;; 
+      show)
+        showAppt
+        ;;
+      edit)
+        editAppt
+        ;;
+      delete)
+        deleteAppt
+        ;;
+	    today)
+      	showApptsToday
+    	  ;;
+      help)
+        printf "\n*** HELP ***\n"
+        printf "Available commands:\nadd\nshow\nhelp\nexit\n"
+        ;;
+      exit)
+        break
+	      ;;
+      *)
+        printf "usage: ./appt.sh [add | show | edit | delete | help | exit]\n"
+        ;;
   esac
   exit 0
 }
