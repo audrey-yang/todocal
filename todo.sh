@@ -17,6 +17,7 @@ function addTodo {
 }
 
 function showTodos {
+  printf "\n*** My TODOs ***\n"
   count=0
   cat todos.csv | while read -r line; do
     printf '[%d] %s\n' "$count" "$line"
@@ -25,6 +26,7 @@ function showTodos {
 }
 
 function editTodos {
+  printf "\n*** Edit TODOs ***\n"
   read -p "Which TODO would you like to edit? Please enter the number: " -r todoNum
   count=0
   while read -r line; do
@@ -43,6 +45,7 @@ function editTodos {
 }
 
 function deleteTodos {
+  printf "\n*** Delete TODOs ***\n"
   read -p "Which TODO would you like to delete? Please enter the number: " -r todoNum
   count=0
   while read -r line; do

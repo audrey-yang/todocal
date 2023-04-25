@@ -20,6 +20,7 @@ function addAppt {
 }
 
 function showAppt {
+  printf "\n*** My appointments ***\n"
   read -p "What day would you like to view? (mm/dd/yy) " -r day
   count=0
   grep -E "${day}" appts.csv | while read -r line; do
@@ -41,7 +42,7 @@ function showApptsToday {
 }
 
 function editAppt {
-  printf "*** Your appointments ***\n"
+  printf "\n*** My appointments ***\n"
   cat appts.csv | while read -r line; do
     printf '[%d] ' "$count"
     echo $line | sed -r 's/^(.*),(.*),(.*),(.*)$/\3-\4: \2/'
@@ -68,7 +69,7 @@ function editAppt {
 }
 
 function deleteAppt {
-  printf "*** Your appointments ***\n"
+  printf "\n*** My appointments ***\n"
   cat appts.csv | while read -r line; do
     printf '[%d] ' "$count"
     echo $line | sed -r 's/^(.*),(.*),(.*),(.*)$/\3-\4: \2/'

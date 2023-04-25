@@ -7,6 +7,7 @@
 ####################################
 
 function main() {
+   cd ~/todocal
    case $1 in 
       todo)
          case $2 in
